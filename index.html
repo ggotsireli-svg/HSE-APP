@@ -298,7 +298,6 @@
         alert('Gemini API Key შენახულია!');
     }
 
-    // ფოტოს მკვეთრი შემცირება (800px max, 0.5 ხარისხი - ~100-200 KB)
     function previewPhoto(input) {
         if (input.files && input.files[0]) {
             const file = input.files[0];
@@ -366,7 +365,7 @@
         }
 
         const aiBtn = document.getElementById('aiBtn');
-        aiBtn.innerText = "⏳ AI ამუშავებს ფოტოს...";
+        aiBtn.innerText = "⏳ ვამოწმებ დაშვებულ მოდელებს...";
         aiBtn.disabled = true;
 
         const prompt = `შენ ხარ შრომის უსაფრთხოების (HSE) ექსპერტი. გააანალიზე ეს ფოტო.
@@ -380,8 +379,32 @@
 }`;
 
         try {
-            // gemini-2.5-flash მოდელის გამოყენება
-            const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
+            // 1. ჯერ ვამოწმებთ, რომელი მოდელებია დაშვებული ამ API Key-სთვის
+            const modelsRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`);
+            const modelsData = await modelsRes.json();
+            
+            if (!modelsRes.ok) {
+                throw new Error(modelsData.error ? modelsData.error.message : 'ვერ ვუკავშირდები მოდელების ბაზას');
+            }
+
+            // 2. ვფილტრავთ იმ მოდელებს, რომლებსაც შეუძლიათ ფოტოს+ტექსტის ანალიზი
+            const validModels = modelsData.models.filter(m => m.supportedGenerationMethods && m.supportedGenerationMethods.includes('generateContent'));
+            
+            // ვანიჭებთ პრიორიტეტს flash მოდელებს (სწრაფი და იაფია), თუ არ არის - ვიღებთ pro-ს
+            let bestModel = validModels.find(m => m.name.includes('flash'));
+            if (!bestModel) bestModel = validModels.find(m => m.name.includes('pro'));
+            if (!bestModel && validModels.length > 0) bestModel = validModels[0]; // უკიდურეს შემთხვევაში ვიღებთ პირველივეს
+
+            if (!bestModel) {
+                throw new Error('თქვენს API Key-ს არ აქვს ფოტოს ანალიზის მოდელებზე წვდომა.');
+            }
+
+            const selectedModelName = bestModel.name;
+            const shortName = selectedModelName.replace('models/', '');
+            aiBtn.innerText = `⏳ მუშავდება (${shortName})...`;
+
+            // 3. ვაგზავნით მთავარ მოთხოვნას ავტომატურად შერჩეულ მოდელზე
+            const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/${selectedModelName}:generateContent?key=${apiKey}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -397,7 +420,7 @@
             const data = await res.json();
 
             if (!res.ok) {
-                throw new Error(data.error ? data.error.message : 'API შეცდომა');
+                throw new Error(data.error ? data.error.message : 'API შეცდომა ანალიზისას');
             }
 
             const rawText = data.candidates[0].content.parts[0].text;
