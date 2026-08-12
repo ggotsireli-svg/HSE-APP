@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>სამუშაოს დარღვევის აღრიცხვის აქტი - LSS</title>
-    <link rel="manifest" href="./manifest.json">
+    <title>სამუშაოს დარღვევის აღრიცხვის აქტი - LSS v2.0</title>
     <meta name="theme-color" content="#1e293b">
     <style>
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -181,7 +180,7 @@
     </div>
 
     <div class="act-header">
-        <div class="brand-logo">LSS - Labor Safety System</div>
+        <div class="brand-logo">LSS - Labor Safety System <span style="color:#2563eb; font-size:11px;">(v2.0)</span></div>
         <div class="act-title">სამუშაოს დარღვევის აღრიცხვის აქტი N <input type="text" id="actNo" style="width:80px;"></div>
     </div>
 
@@ -283,8 +282,13 @@
 <script>
     let base64Image = "";
 
+    // ავტომატურად ვაუქმებთ არსებულ Service Worker-ს, რომ ძველი ქეში წაიშალოს
     if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('./sw.js').catch(()=>{});
+        navigator.serviceWorker.getRegistrations().then(function(registrations) {
+            for(let registration of registrations) {
+                registration.unregister();
+            }
+        });
     }
 
     window.onload = () => {
@@ -365,7 +369,7 @@
         }
 
         const aiBtn = document.getElementById('aiBtn');
-        aiBtn.innerText = "⏳ ვამოწმებ დაშვებულ მოდელებს...";
+        aiBtn.innerText = "⏳ ვამოწმებ დაშვებულ მოდელებს (v2.0)...";
         aiBtn.disabled = true;
 
         const prompt = `შენ ხარ შრომის უსაფრთხოების (HSE) ექსპერტი. გააანალიზე ეს ფოტო.
@@ -379,7 +383,6 @@
 }`;
 
         try {
-            // 1. ჯერ ვამოწმებთ, რომელი მოდელებია დაშვებული ამ API Key-სთვის
             const modelsRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`);
             const modelsData = await modelsRes.json();
             
@@ -387,13 +390,11 @@
                 throw new Error(modelsData.error ? modelsData.error.message : 'ვერ ვუკავშირდები მოდელების ბაზას');
             }
 
-            // 2. ვფილტრავთ იმ მოდელებს, რომლებსაც შეუძლიათ ფოტოს+ტექსტის ანალიზი
             const validModels = modelsData.models.filter(m => m.supportedGenerationMethods && m.supportedGenerationMethods.includes('generateContent'));
             
-            // ვანიჭებთ პრიორიტეტს flash მოდელებს (სწრაფი და იაფია), თუ არ არის - ვიღებთ pro-ს
             let bestModel = validModels.find(m => m.name.includes('flash'));
             if (!bestModel) bestModel = validModels.find(m => m.name.includes('pro'));
-            if (!bestModel && validModels.length > 0) bestModel = validModels[0]; // უკიდურეს შემთხვევაში ვიღებთ პირველივეს
+            if (!bestModel && validModels.length > 0) bestModel = validModels[0];
 
             if (!bestModel) {
                 throw new Error('თქვენს API Key-ს არ აქვს ფოტოს ანალიზის მოდელებზე წვდომა.');
@@ -403,7 +404,6 @@
             const shortName = selectedModelName.replace('models/', '');
             aiBtn.innerText = `⏳ მუშავდება (${shortName})...`;
 
-            // 3. ვაგზავნით მთავარ მოთხოვნას ავტომატურად შერჩეულ მოდელზე
             const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/${selectedModelName}:generateContent?key=${apiKey}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
