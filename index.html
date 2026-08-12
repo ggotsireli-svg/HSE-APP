@@ -3,74 +3,412 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>ჩემი PWA აპლიკაცია</title>
-
-    <!-- Manifest ფაილის დაკავშირება -->
+    <title>სამუშაოს დარღვევის აღრიცხვის აქტი - LSS</title>
     <link rel="manifest" href="./manifest.json">
     <meta name="theme-color" content="#007aff">
-
     <style>
         * {
             box-sizing: border-box;
             -webkit-tap-highlight-color: transparent;
         }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
             margin: 0;
-            padding: 24px;
-            background: #f4f5f7;
+            padding: 12px;
+            background: #eef2f5;
+            color: #2c3e50;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+        .header {
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
-            min-height: 100vh;
+            border-bottom: 2px solid #007aff;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
         }
-        .card {
-            background: white;
-            padding: 24px;
-            border-radius: 16px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            text-align: center;
+        .header h2 {
+            margin: 0;
+            font-size: 18px;
+            color: #1a252f;
+        }
+        .brand {
+            font-weight: bold;
+            color: #007aff;
+            font-size: 14px;
+        }
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+        }
+        .form-group {
+            margin-bottom: 12px;
+        }
+        label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: #34495e;
+        }
+        input[type="text"],
+        input[type="datetime-local"],
+        input[type="date"],
+        textarea {
             width: 100%;
-            max-width: 400px;
+            padding: 8px 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 14px;
+            outline: none;
+            background: #f8fafc;
         }
-        .btn {
+        input:focus, textarea:focus {
+            border-color: #007aff;
+            background: #fff;
+        }
+        textarea {
+            resize: vertical;
+            min-height: 70px;
+        }
+        
+        /* ფოტოს კონტეინერი - კადრის ჩამოუჭრელად შენარჩუნება */
+        .photo-box {
+            border: 2px dashed #cbd5e1;
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+            background: #f8fafc;
+            margin-bottom: 12px;
+        }
+        .photo-preview {
+            width: 100%;
+            max-height: 350px;
+            object-fit: contain; /* ინარჩუნებს პროპორციებს და არ ჭრის გვერდებს */
+            border-radius: 6px;
+            display: none;
+            margin-top: 8px;
+            background: #000;
+        }
+        
+        .section-title {
+            background: #f1f5f9;
+            padding: 6px 10px;
+            font-size: 13px;
+            font-weight: bold;
+            border-left: 4px solid #007aff;
+            margin: 15px 0 10px 0;
+        }
+        
+        /* ჩექბოქსების სექცია */
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            font-size: 13px;
+            margin-top: 5px;
+        }
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: normal;
+            cursor: pointer;
+        }
+
+        /* დინამიური სიის სტილები */
+        .dynamic-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .list-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .list-number {
+            font-weight: bold;
+            font-size: 13px;
+            min-width: 20px;
+        }
+        .btn-add {
+            background: #e2e8f0;
+            color: #1e293b;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 6px;
+        }
+        .btn-remove {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        /* ბეჭდვისა და შენახვის ღილაკი */
+        .actions {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        .btn-submit {
             background-color: #007aff;
             color: white;
             border: none;
-            padding: 14px 28px;
-            font-size: 16px;
+            padding: 12px;
+            font-size: 15px;
             font-weight: 600;
-            border-radius: 12px;
+            border-radius: 8px;
             width: 100%;
             cursor: pointer;
-            margin-top: 16px;
         }
-        .btn:active {
-            opacity: 0.8;
+
+        /* ბეჭდვის (PDF) ოპტიმიზაცია */
+        @media print {
+            body { background: white; padding: 0; }
+            .container { box-shadow: none; border-radius: 0; padding: 0; }
+            .btn-add, .btn-remove, .actions, input[type="file"] { display: none !important; }
+            input, textarea { border: none !important; background: transparent !important; padding: 0 !important; }
+            .photo-box { border: 1px solid #ccc; }
         }
     </style>
 </head>
 <body>
 
-    <div class="card">
-        <h1>PWA აპლიკაცია</h1>
-        <p>გილოცავთ! თქვენი პირველი PWA აპლიკაცია წარმატებით გაეშვა.</p>
-        <button class="btn" onclick="handleClick()">შეამოწმე</button>
+<div class="container">
+    <div class="header">
+        <h2>სამუშაოს დარღვევის აღრიცხვის აქტი</h2>
+        <div class="brand">LSS-Labor Safety System</div>
     </div>
 
-    <script>
-        function handleClick() {
-            alert('აპლიკაცია გამართულად მუშაობს!');
-        }
+    <form id="actForm">
+        <!-- ძირითადი რეკვიზიტები -->
+        <div class="grid-3">
+            <div class="form-group">
+                <label>თარიღი, დრო:</label>
+                <input type="datetime-local" id="dateTime">
+            </div>
+            <div class="form-group">
+                <label>სამუშაო ნებართვის N:</label>
+                <input type="text" id="permitNo">
+            </div>
+            <div class="form-group">
+                <label>აქტი N:</label>
+                <input type="text" id="actNo">
+            </div>
+        </div>
 
-        // Service Worker-ის რეგისტრაცია
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js')
-                    .then((reg) => console.log('Service Worker დარეგისტრირდა:', reg.scope))
-                    .catch((err) => console.log('Service Worker შეცდომა:', err));
-            });
+        <div class="grid-2">
+            <div class="form-group">
+                <label>კონტრაქტორი:</label>
+                <input type="text" id="contractor">
+            </div>
+            <div class="form-group">
+                <label>მისამართი:</label>
+                <input type="text" id="address">
+            </div>
+        </div>
+
+        <div class="grid-2">
+            <div class="form-group">
+                <label>სამუშაო ლოკაცია:</label>
+                <input type="text" id="location">
+            </div>
+            <div class="form-group">
+                <label>სამუშაოს აღწერა:</label>
+                <input type="text" id="workDesc">
+            </div>
+        </div>
+
+        <!-- პირველადი ფოტო -->
+        <div class="section-title">დარღვევის ფოტოფიქსაცია</div>
+        <div class="photo-box">
+            <input type="file" id="photo1Input" accept="image/*" capture="environment" onchange="previewImage(this, 'photo1Preview')">
+            <img id="photo1Preview" class="photo-preview" alt="დარღვევის ფოტო">
+        </div>
+
+        <!-- დანომრილი შეუსაბამობები -->
+        <div class="section-title">1) შეუსაბამობის აღწერა (მოკლედ და კონკრეტულად)</div>
+        <div id="violationsList" class="dynamic-list">
+            <div class="list-item">
+                <span class="list-number">1.</span>
+                <input type="text" placeholder="შეუსაბამობა 1">
+            </div>
+        </div>
+        <button type="button" class="btn-add" onclick="addListItem('violationsList', 'შეუსაბამობა')">+ დარღვევის დამატება</button>
+
+        <!-- დანომრილი კორექტირებები -->
+        <div class="section-title">2) განსახორციელებელი კორექტირება</div>
+        <div id="actionsList" class="dynamic-list">
+            <div class="list-item">
+                <span class="list-number">1.</span>
+                <input type="text" placeholder="განსახორციელებელი ქმედება 1">
+            </div>
+        </div>
+        <button type="button" class="btn-add" onclick="addListItem('actionsList', 'განსახორციელებელი ქმედება')">+ ქმედების დამატება</button>
+
+        <!-- კლასიფიკაცია -->
+        <div class="section-title">დარღვევის კლასიფიკაცია და ზომები</div>
+        <div class="form-group">
+            <label>დარღვევის ტიპი:</label>
+            <div class="checkbox-group">
+                <label><input type="checkbox" name="type" value="სახიფათო ქცევა"> სახიფათო ქცევა</label>
+                <label><input type="checkbox" name="type" value="სახიფათო პირობა"> სახიფათო პირობა</label>
+                <label><input type="checkbox" name="type" value="დოკუმენტური"> დოკუმენტური</label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>დარღვევის სიმძიმე:</label>
+            <div class="checkbox-group">
+                <label><input type="checkbox" name="severity" value="კრიტიკული"> კრიტიკული</label>
+                <label><input type="checkbox" name="severity" value="მაღალი"> მაღალი</label>
+                <label><input type="checkbox" name="severity" value="საშუალო"> საშუალო</label>
+                <label><input type="checkbox" name="severity" value="დაბალი"> დაბალი</label>
+            </div>
+        </div>
+
+        <div class="grid-2">
+            <div class="form-group">
+                <label class="checkbox-group" style="margin-top:15px;">
+                    <input type="checkbox" id="stopWork"> <strong>შეჩერდეს სამუშაოები</strong>
+                </label>
+            </div>
+            <div class="form-group">
+                <label>გამოსწორების ვადა:</label>
+                <input type="date" id="deadline">
+            </div>
+        </div>
+
+        <!-- პასუხისმგებელი პირები (პირველადი) -->
+        <div class="section-title">პასუხისმგებელი პირები</div>
+        <div class="grid-2">
+            <div class="form-group">
+                <label>შრომის უსაფრთხოების სპეციალისტი (სახელი/გვარი):</label>
+                <input type="text" id="hseSpec">
+            </div>
+            <div class="form-group">
+                <label>სამუშაოების მწარმოებელი / დამრღვევი (სახელი/გვარი):</label>
+                <input type="text" id="workerSpec">
+            </div>
+        </div>
+
+        <!-- განხორციელებული ქმედება და შემოწმება -->
+        <div class="section-title">განხორციელებული ქმედება / უკუკავშირი</div>
+        <div class="form-group">
+            <textarea id="feedback" placeholder="შესრულებული სამუშაოს აღწერა..."></textarea>
+        </div>
+
+        <div class="form-group">
+            <label>გამოსწორების შემდგომი ფოტო:</label>
+            <div class="photo-box">
+                <input type="file" id="photo2Input" accept="image/*" capture="environment" onchange="previewImage(this, 'photo2Preview')">
+                <img id="photo2Preview" class="photo-preview" alt="გამოსწორების ფოტო">
+            </div>
+        </div>
+
+        <div class="grid-2">
+            <div class="form-group">
+                <label>შრომის უსაფრთხოების ოფიცერი:</label>
+                <input type="text" id="hseOfficer">
+            </div>
+            <div class="form-group">
+                <label>სამუშაოთა მწარმოებელი / დამრღვევი პირი:</label>
+                <input type="text" id="workerFinal">
+            </div>
+        </div>
+
+        <div class="grid-2">
+            <div class="form-group">
+                <label class="checkbox-group" style="margin-top:15px;">
+                    <input type="checkbox" id="statusResume"> <strong>სტატუსი: სამუშაოების განახლება</strong>
+                </label>
+            </div>
+            <div class="form-group">
+                <label>გამოსწორების თარიღი:</label>
+                <input type="date" id="fixDate">
+            </div>
+        </div>
+
+        <div class="actions">
+            <button type="button" class="btn-submit" onclick="window.print()">აქტის შენახვა / ბეჭდვა (PDF)</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    // PWA Service Worker Registration
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('./sw.js')
+                .then(reg => console.log('SW Registered'))
+                .catch(err => console.log('SW Error', err));
+        });
+    }
+
+    // ფოტოს ჩვენება ჩამოჭრის გარეშე
+    function previewImage(input, previewId) {
+        const preview = document.getElementById(previewId);
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+            }
+            reader.readAsDataURL(input.files[0]);
         }
-    </script>
+    }
+
+    // დინამიური სიის ელემენტების დამატება და გადანომრვა
+    function addListItem(containerId, placeholderText) {
+        const container = document.getElementById(containerId);
+        const count = container.children.length + 1;
+
+        const itemDiv = document.createElement('div');
+        itemDiv.className = 'list-item';
+
+        itemDiv.innerHTML = `
+            <span class="list-number">${count}.</span>
+            <input type="text" placeholder="${placeholderText} ${count}">
+            <button type="button" class="btn-remove" onclick="removeListItem(this, '${containerId}')">✕</button>
+        `;
+
+        container.appendChild(itemDiv);
+    }
+
+    function removeListItem(btn, containerId) {
+        btn.parentElement.remove();
+        reindexList(containerId);
+    }
+
+    function reindexList(containerId) {
+        const container = document.getElementById(containerId);
+        const items = container.querySelectorAll('.list-item');
+        items.forEach((item, index) => {
+            item.querySelector('.list-number').textContent = `${index + 1}.`;
+        });
+    }
+</script>
 </body>
 </html>
