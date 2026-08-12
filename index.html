@@ -23,7 +23,6 @@
             border: 2px solid #0f172a;
         }
         
-        /* AI Settings Box */
         .ai-config {
             background: #eff6ff;
             border: 1px solid #bfdbfe;
@@ -47,7 +46,6 @@
             cursor: pointer;
         }
 
-        /* Act Header */
         .act-header {
             display: flex;
             justify-content: space-between;
@@ -56,37 +54,23 @@
             padding-bottom: 8px;
             margin-bottom: 12px;
         }
-        .act-title {
-            font-size: 18px;
-            font-weight: bold;
-        }
-        .brand-logo {
-            font-weight: bold;
-            font-size: 14px;
-            color: #1e3a8a;
-        }
+        .act-title { font-size: 18px; font-weight: bold; }
+        .brand-logo { font-weight: bold; font-size: 14px; color: #1e3a8a; }
 
-        /* Form Table Layout */
         .grid-table {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 10px;
             margin-bottom: 10px;
         }
-        .form-cell {
-            display: flex;
-            flex-direction: column;
-        }
+        .form-cell { display: flex; flex-direction: column; }
         .form-cell label {
             font-size: 11px;
             font-weight: bold;
             margin-bottom: 2px;
             text-transform: uppercase;
         }
-        .form-cell input[type="text"],
-        .form-cell input[type="datetime-local"],
-        .form-cell input[type="date"],
-        .form-cell textarea {
+        .form-cell input, .form-cell textarea {
             width: 100%;
             padding: 6px;
             border: 1px solid #64748b;
@@ -94,7 +78,6 @@
             font-size: 13px;
         }
 
-        /* Checkbox Groups */
         .checkbox-row {
             display: flex;
             flex-wrap: wrap;
@@ -106,14 +89,8 @@
             font-size: 12px;
             background: #f8fafc;
         }
-        .checkbox-row label {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            cursor: pointer;
-        }
+        .checkbox-row label { display: flex; align-items: center; gap: 4px; cursor: pointer; }
 
-        /* Dynamic Lists */
         .section-header {
             background: #0f172a;
             color: white;
@@ -125,17 +102,8 @@
             justify-content: space-between;
             align-items: center;
         }
-        .list-item {
-            display: flex;
-            gap: 6px;
-            margin-bottom: 6px;
-            align-items: center;
-        }
-        .list-num {
-            font-weight: bold;
-            font-size: 13px;
-            width: 20px;
-        }
+        .list-item { display: flex; gap: 6px; margin-bottom: 6px; align-items: center; }
+        .list-num { font-weight: bold; font-size: 13px; width: 20px; }
         .btn-sm {
             background: #e2e8f0;
             border: 1px solid #94a3b8;
@@ -145,7 +113,6 @@
             cursor: pointer;
         }
 
-        /* Photo Area */
         .photo-container {
             border: 2px dashed #94a3b8;
             padding: 10px;
@@ -162,7 +129,6 @@
             border: 1px solid #ccc;
         }
 
-        /* Signatures Grid */
         .sig-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -177,11 +143,11 @@
             background: #059669;
             color: white;
             border: none;
-            padding: 8px 14px;
+            padding: 10px 16px;
             font-weight: bold;
             border-radius: 4px;
             cursor: pointer;
-            margin-top: 5px;
+            margin-top: 8px;
         }
         .btn-ai:disabled { background: #9ca3af; }
 
@@ -208,49 +174,27 @@
 <body>
 
 <div class="container">
-    <!-- AI Key Config -->
     <div class="ai-config">
         <strong>🔑 Gemini API Key:</strong>
         <input type="password" id="apiKeyInput" placeholder="ჩაასვით Google Gemini API Key">
         <button type="button" onclick="saveApiKey()">შენახვა</button>
     </div>
 
-    <!-- Header -->
     <div class="act-header">
         <div class="brand-logo">LSS - Labor Safety System</div>
         <div class="act-title">სამუშაოს დარღვევის აღრიცხვის აქტი N <input type="text" id="actNo" style="width:80px;"></div>
     </div>
 
     <form id="actForm">
-        <!-- Metadata -->
         <div class="grid-table">
-            <div class="form-cell">
-                <label>თარიღი, დრო:</label>
-                <input type="datetime-local" id="dateTime">
-            </div>
-            <div class="form-cell">
-                <label>სამუშაო ნებართვის N:</label>
-                <input type="text" id="permitNo">
-            </div>
-            <div class="form-cell">
-                <label>კონტრაქტორი:</label>
-                <input type="text" id="contractor">
-            </div>
-            <div class="form-cell">
-                <label>მისამართი:</label>
-                <input type="text" id="address">
-            </div>
-            <div class="form-cell">
-                <label>სამუშაო ლოკაცია:</label>
-                <input type="text" id="location">
-            </div>
-            <div class="form-cell">
-                <label>სამუშაოს აღწერა:</label>
-                <input type="text" id="workDesc">
-            </div>
+            <div class="form-cell"><label>თარიღი, დრო:</label><input type="datetime-local" id="dateTime"></div>
+            <div class="form-cell"><label>სამუშაო ნებართვის N:</label><input type="text" id="permitNo"></div>
+            <div class="form-cell"><label>კონტრაქტორი:</label><input type="text" id="contractor"></div>
+            <div class="form-cell"><label>მისამართი:</label><input type="text" id="address"></div>
+            <div class="form-cell"><label>სამუშაო ლოკაცია:</label><input type="text" id="location"></div>
+            <div class="form-cell"><label>სამუშაოს აღწერა:</label><input type="text" id="workDesc"></div>
         </div>
 
-        <!-- Classifications -->
         <div class="checkbox-row">
             <strong>დარღვევის ტიპი:</strong>
             <label><input type="checkbox" name="type" value="სახიფათო ქცევა"> სახიფათო ქცევა</label>
@@ -271,40 +215,31 @@
             <span style="margin-left:auto;">გამოსწორების ვადა: <input type="date" id="deadline"></span>
         </div>
 
-        <!-- Photo & AI Section -->
         <div class="section-header">დარღვევის ფოტო</div>
         <div class="photo-container">
             <input type="file" id="photoInput" accept="image/*" capture="environment" onchange="previewPhoto(this)">
             <br>
             <button type="button" id="aiBtn" class="btn-ai" onclick="analyzePhotoWithAI()" disabled>🤖 AI ანალიზი (ავტომატური შევსება)</button>
             <img id="photoPreview" class="photo-preview" alt="ფოტო">
+            <div id="fileSizeInfo" style="font-size:11px; color:#64748b; margin-top:4px;"></div>
         </div>
 
-        <!-- Violations -->
         <div class="section-header">
             <span>1) შეუსაბამობის აღწერა</span>
             <button type="button" class="btn-sm" onclick="addListRow('violationsList')">+ დამატება</button>
         </div>
         <div id="violationsList">
-            <div class="list-item">
-                <span class="list-num">1.</span>
-                <input type="text" class="v-input" placeholder="შეუსაბამობა 1">
-            </div>
+            <div class="list-item"><span class="list-num">1.</span><input type="text" class="v-input" placeholder="შეუსაბამობა 1"></div>
         </div>
 
-        <!-- Corrective Actions -->
         <div class="section-header">
             <span>2) განსახორციელებელი კორექტირება</span>
             <button type="button" class="btn-sm" onclick="addListRow('actionsList')">+ დამატება</button>
         </div>
         <div id="actionsList">
-            <div class="list-item">
-                <span class="list-num">1.</span>
-                <input type="text" class="a-input" placeholder="განსახორციელებელი ქმედება 1">
-            </div>
+            <div class="list-item"><span class="list-num">1.</span><input type="text" class="a-input" placeholder="განსახორციელებელი ქმედება 1"></div>
         </div>
 
-        <!-- Initial Signatures -->
         <div class="sig-grid">
             <div>
                 <strong>შრომის უსაფრთხოების სპეციალისტი:</strong>
@@ -318,7 +253,6 @@
             </div>
         </div>
 
-        <!-- Feedback & Follow-up -->
         <div class="section-header">განხორციელებული ქმედება / უკუკავშირი</div>
         <div class="form-cell" style="margin-bottom:10px;">
             <textarea id="feedback" rows="3" placeholder="უკუკავშირის აღწერა..."></textarea>
@@ -329,7 +263,6 @@
             <span style="margin-left:auto;">გამოსწორების თარიღი: <input type="date" id="fixDate"></span>
         </div>
 
-        <!-- Final Signatures -->
         <div class="sig-grid">
             <div>
                 <strong>შრომის უსაფრთხოების ოფიცერი:</strong>
@@ -350,12 +283,10 @@
 <script>
     let base64Image = "";
 
-    // PWA SW
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('./sw.js').catch(()=>{});
     }
 
-    // Key Management
     window.onload = () => {
         const key = localStorage.getItem('gemini_key');
         if(key) document.getElementById('apiKeyInput').value = key;
@@ -367,22 +298,54 @@
         alert('Gemini API Key შენახულია!');
     }
 
-    // Photo Preview & Base64
+    // ფოტოს მკვეთრი შემცირება (800px max, 0.5 ხარისხი)
     function previewPhoto(input) {
         if (input.files && input.files[0]) {
+            const file = input.files[0];
             const reader = new FileReader();
             reader.onload = function(e) {
-                const img = document.getElementById('photoPreview');
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    let width = img.width;
+                    let height = img.height;
+                    const max_size = 800; 
+
+                    if (width > height) {
+                        if (width > max_size) {
+                            height *= max_size / width;
+                            width = max_size;
+                        }
+                    } else {
+                        if (height > max_size) {
+                            width *= max_size / height;
+                            height = max_size;
+                        }
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    // ძლიერი კომპრესია AI-სთვის
+                    const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.5);
+                    const previewImg = document.getElementById('photoPreview');
+                    previewImg.src = compressedDataUrl;
+                    previewImg.style.display = 'block';
+
+                    base64Image = compressedDataUrl.split(',')[1];
+                    const kbSize = Math.round((base64Image.length * 0.75) / 1024);
+                    document.getElementById('fileSizeInfo').innerText = `შემცირებული ფოტოს ზომა: ~${kbSize} KB`;
+
+                    document.getElementById('aiBtn').disabled = false;
+                };
                 img.src = e.target.result;
-                img.style.display = 'block';
-                base64Image = e.target.result.split(',')[1];
-                document.getElementById('aiBtn').disabled = false;
             }
-            reader.readAsDataURL(input.files[0]);
+            reader.readAsDataURL(file);
         }
     }
 
-    // Dynamic Row Logic
     function addListRow(containerId, value = "") {
         const container = document.getElementById(containerId);
         const count = container.children.length + 1;
@@ -396,7 +359,6 @@
         container.appendChild(div);
     }
 
-    // Gemini AI Analysis
     async function analyzePhotoWithAI() {
         const apiKey = localStorage.getItem('gemini_key') || document.getElementById('apiKeyInput').value.trim();
         if(!apiKey) {
@@ -419,7 +381,8 @@
 }`;
 
         try {
-            const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
+            // gemini-1.5-flash მოდელის გამოყენება
+            const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -433,21 +396,23 @@
             });
 
             const data = await res.json();
+
+            if (!res.ok) {
+                throw new Error(data.error ? data.error.message : 'API შეცდომა');
+            }
+
             const rawText = data.candidates[0].content.parts[0].text;
             const cleanedJson = rawText.replace(/```json/g, '').replace(/```/g, '').trim();
             const result = JSON.parse(cleanedJson);
 
-            // Populate Violations
             const vContainer = document.getElementById('violationsList');
             vContainer.innerHTML = '';
             result.violations.forEach((v) => addListRow('violationsList', v));
 
-            // Populate Actions
             const aContainer = document.getElementById('actionsList');
             aContainer.innerHTML = '';
             result.actions.forEach((a) => addListRow('actionsList', a));
 
-            // Checkboxes
             document.querySelectorAll('input[name="type"]').forEach(cb => {
                 cb.checked = (cb.value === result.type);
             });
@@ -458,7 +423,7 @@
 
             aiBtn.innerText = "✅ AI ანალიზი დასრულდა";
         } catch(err) {
-            alert('AI შეცდომა: შეამოწმეთ API Key ან ფოტოს ზომა.');
+            alert('შეცდომა: ' + err.message);
             aiBtn.innerText = "🤖 AI ანალიზი (ხელახლა ცდა)";
             aiBtn.disabled = false;
         }
