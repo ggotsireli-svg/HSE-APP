@@ -298,7 +298,7 @@
         alert('Gemini API Key შენახულია!');
     }
 
-    // ფოტოს მკვეთრი შემცირება (800px max, 0.5 ხარისხი)
+    // ფოტოს მკვეთრი შემცირება (800px max, 0.5 ხარისხი - ~100-200 KB)
     function previewPhoto(input) {
         if (input.files && input.files[0]) {
             const file = input.files[0];
@@ -328,7 +328,6 @@
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, width, height);
 
-                    // ძლიერი კომპრესია AI-სთვის
                     const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.5);
                     const previewImg = document.getElementById('photoPreview');
                     previewImg.src = compressedDataUrl;
@@ -381,8 +380,8 @@
 }`;
 
         try {
-            // gemini-1.5-flash მოდელის გამოყენება
-            const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+            // gemini-2.5-flash მოდელის გამოყენება
+            const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
