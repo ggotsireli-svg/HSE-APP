@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>ჩემი PWA აპლიკაცია</title>
+
+    <!-- Manifest ფაილის დაკავშირება -->
+    <link rel="manifest" href="./manifest.json">
+    <meta name="theme-color" content="#007aff">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            margin: 0;
+            padding: 24px;
+            background: #f4f5f7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .card {
+            background: white;
+            padding: 24px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            text-align: center;
+            width: 100%;
+            max-width: 400px;
+        }
+        .btn {
+            background-color: #007aff;
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 12px;
+            width: 100%;
+            cursor: pointer;
+            margin-top: 16px;
+        }
+        .btn:active {
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <h1>PWA აპლიკაცია</h1>
+        <p>გილოცავთ! თქვენი პირველი PWA აპლიკაცია წარმატებით გაეშვა.</p>
+        <button class="btn" onclick="handleClick()">შეამოწმე</button>
+    </div>
+
+    <script>
+        function handleClick() {
+            alert('აპლიკაცია გამართულად მუშაობს!');
+        }
+
+        // Service Worker-ის რეგისტრაცია
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then((reg) => console.log('Service Worker დარეგისტრირდა:', reg.scope))
+                    .catch((err) => console.log('Service Worker შეცდომა:', err));
+            });
+        }
+    </script>
+</body>
+</html>
